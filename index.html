@@ -1,0 +1,2518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <title>Manda Rima</title>
+
+    <!-- Fonte opcional do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        :root {
+            --bg: #09090b;
+            --bg-soft: #111114;
+            --panel: #101013;
+            --panel-light: #18181c;
+
+            --text: #f4f4f5;
+            --muted: #8f8f98;
+            --muted-2: #5f5f68;
+
+            --accent: #d7ff00;
+            --accent-dark: #9ab800;
+
+            --danger: #ff3b30;
+
+            --border: rgba(255, 255, 255, 0.08);
+
+            --sidebar-width: 285px;
+            --footer-height: 86px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background:
+                radial-gradient(
+                    circle at 70% 35%,
+                    rgba(215, 255, 0, 0.045),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family: "Inter", system-ui, sans-serif;
+
+            overflow: hidden;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        /* =========================================================
+           ESTRUTURA PRINCIPAL
+        ========================================================= */
+
+        .app {
+            width: 100%;
+            height: 100vh;
+
+            display: grid;
+
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: 1fr var(--footer-height);
+        }
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .sidebar {
+            grid-row: 1 / 3;
+            grid-column: 1;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #101013 0%,
+                    #0b0b0d 100%
+                );
+
+            border-right: 1px solid var(--border);
+
+            display: flex;
+            flex-direction: column;
+
+            min-height: 0;
+
+            position: relative;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px 18px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            margin-bottom: 7px;
+        }
+
+        .logo-mark {
+            width: 12px;
+            height: 12px;
+
+            background: var(--accent);
+
+            transform: rotate(45deg);
+
+            box-shadow:
+                0 0 15px rgba(215, 255, 0, 0.4);
+        }
+
+        .logo h1 {
+            margin: 0;
+
+            font-family: "Archivo Black", sans-serif;
+            font-size: 16px;
+            line-height: 1;
+
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .history-header {
+            padding: 17px 20px 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .history-title {
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .history-count {
+            color: var(--accent);
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .history {
+            flex: 1;
+            min-height: 0;
+
+            overflow-y: auto;
+
+            padding: 0 10px 18px;
+
+            scrollbar-width: thin;
+            scrollbar-color: #303035 transparent;
+        }
+
+        .history::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .history::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .history::-webkit-scrollbar-thumb {
+            background: #303035;
+            border-radius: 999px;
+        }
+
+        .history-item {
+            width: 100%;
+
+            padding: 10px 11px;
+            margin-bottom: 2px;
+
+            border-radius: 7px;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: #9999a1;
+
+            font-size: 13px;
+            font-weight: 500;
+
+            transition:
+                background 120ms ease,
+                color 120ms ease,
+                transform 120ms ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.035);
+            color: #d6d6db;
+        }
+
+        .history-item.current {
+            color: var(--accent);
+            background: rgba(215, 255, 0, 0.08);
+
+            font-weight: 700;
+        }
+
+        .history-number {
+            min-width: 23px;
+
+            color: var(--muted-2);
+
+            font-size: 10px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .history-item.current .history-number {
+            color: var(--accent-dark);
+        }
+
+        .history-word {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* =========================================================
+           ÁREA PRINCIPAL
+        ========================================================= */
+
+        .main {
+            grid-column: 2;
+            grid-row: 1;
+
+            min-width: 0;
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            position: relative;
+        }
+
+        /* Textura visual discreta */
+        .main::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            pointer-events: none;
+
+            opacity: 0.18;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,0.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 45px 45px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent 85%
+                );
+        }
+
+        .topbar {
+            height: 70px;
+
+            padding: 0 32px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: var(--accent);
+
+            box-shadow:
+                0 0 10px rgba(215, 255, 0, 0.5);
+
+            transition: all 180ms ease;
+        }
+
+        .status.paused .status-dot {
+            background: var(--danger);
+            box-shadow: 0 0 10px rgba(255, 59, 48, 0.5);
+        }
+
+        .session-counter {
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .session-counter strong {
+            color: var(--text);
+        }
+
+        /* =========================================================
+           PALAVRA
+        ========================================================= */
+
+        .word-stage {
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+
+            padding:
+                20px
+                30px
+                35px;
+
+            position: relative;
+            z-index: 2;
+
+            cursor: pointer;
+
+            user-select: none;
+        }
+
+        .word-label {
+            margin-bottom: 23px;
+
+            color: var(--muted-2);
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .word {
+            margin: 0;
+
+            max-width: 95%;
+
+            font-family: "Archivo Black", sans-serif;
+
+            font-size:
+                clamp(
+                    58px,
+                    9vw,
+                    145px
+                );
+
+            line-height: 0.9;
+
+            letter-spacing: -4px;
+
+            color: var(--text);
+
+            text-transform: lowercase;
+
+            text-wrap: balance;
+
+            transition:
+                opacity 180ms ease,
+                transform 180ms ease,
+                filter 180ms ease;
+        }
+
+        .word.changing {
+            opacity: 0;
+            transform: translateY(12px) scale(0.97);
+            filter: blur(7px);
+        }
+
+        .word.ready {
+            animation: wordIn 280ms cubic-bezier(.16, 1, .3, 1);
+        }
+
+        @keyframes wordIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scale(0.97);
+                filter: blur(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .definition {
+            max-width: min(680px, 90%);
+
+            margin: 28px auto 0;
+
+            color: var(--muted);
+
+            font-size: 14px;
+            line-height: 1.5;
+
+            min-height: 21px;
+
+            transition:
+                opacity 180ms ease,
+                transform 180ms ease;
+        }
+
+        .definition strong {
+            color: #c9c9ce;
+        }
+
+        .word-stage:hover .word {
+            color: #ffffff;
+        }
+
+        /* =========================================================
+           PROGRESSO
+        ========================================================= */
+
+        .progress-container {
+            width: min(680px, 80%);
+
+            margin-top: 45px;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+
+            margin-bottom: 9px;
+
+            color: var(--muted-2);
+
+            font-size: 9px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 1.3px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 3px;
+
+            background: rgba(255,255,255,0.09);
+
+            overflow: hidden;
+
+            border-radius: 999px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+
+            background: var(--accent);
+
+            transform-origin: left center;
+
+            box-shadow:
+                0 0 12px rgba(215,255,0,0.3);
+
+            will-change: transform;
+        }
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .controls {
+            grid-column: 2;
+            grid-row: 2;
+
+            height: var(--footer-height);
+
+            background:
+                rgba(15, 15, 18, 0.96);
+
+            border-top: 1px solid var(--border);
+
+            backdrop-filter: blur(16px);
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr))
+                minmax(150px, 1.4fr);
+
+            gap: 7px;
+
+            padding: 12px 18px;
+
+            position: relative;
+            z-index: 20;
+        }
+
+        .control-button {
+            border: 1px solid transparent;
+
+            background: transparent;
+
+            color: var(--muted);
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            min-width: 0;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+            transition:
+                background 140ms ease,
+                color 140ms ease,
+                border-color 140ms ease,
+                transform 100ms ease;
+        }
+
+        .control-button:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.045);
+        }
+
+        .control-button:active {
+            transform: scale(0.98);
+        }
+
+        .control-button.active {
+            color: var(--accent);
+
+            background: rgba(215,255,0,0.075);
+
+            border-color: rgba(215,255,0,0.17);
+        }
+
+        .control-button.pause {
+            color: var(--text);
+
+            border-color: rgba(255,255,255,0.11);
+
+            background: rgba(255,255,255,0.035);
+        }
+
+        .control-button.pause.paused {
+            color: var(--accent);
+
+            border-color: rgba(215,255,0,0.22);
+
+            background: rgba(215,255,0,0.08);
+        }
+
+        .speed-value {
+            color: var(--muted-2);
+            font-size: 9px;
+        }
+
+        .active .speed-value {
+            color: var(--accent-dark);
+        }
+
+        /* =========================================================
+           LOADING
+        ========================================================= */
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+
+            z-index: 100;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(9,9,11,0.88);
+
+            backdrop-filter: blur(10px);
+
+            opacity: 1;
+
+            pointer-events: auto;
+
+            transition: opacity 250ms ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            text-align: center;
+        }
+
+        .loader-mark {
+            width: 28px;
+            height: 28px;
+
+            margin: 0 auto 18px;
+
+            border: 3px solid rgba(215,255,0,0.15);
+            border-top-color: var(--accent);
+
+            border-radius: 50%;
+
+            animation: spin 700ms linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-title {
+            font-family: "Archivo Black", sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+
+        .loader-text {
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+        /* =========================================================
+           RESPONSIVIDADE
+        ========================================================= */
+
+        @media (max-width: 760px) {
+            :root {
+                --footer-height: 100px;
+            }
+
+            body {
+                overflow: hidden;
+            }
+
+            .app {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr var(--footer-height);
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .controls {
+                grid-column: 1;
+                grid-row: 2;
+
+                padding:
+                    10px
+                    max(10px, env(safe-area-inset-right))
+                    max(10px, env(safe-area-inset-bottom))
+                    max(10px, env(safe-area-inset-left));
+
+                grid-template-columns:
+                    repeat(4, 1fr)
+                    1.45fr;
+            }
+
+            .control-button {
+                flex-direction: column;
+                gap: 3px;
+
+                font-size: 8px;
+                letter-spacing: 0.7px;
+            }
+
+            .speed-value {
+                font-size: 8px;
+            }
+
+            .topbar {
+                height: 58px;
+
+                padding: 0 18px;
+            }
+
+            .word-stage {
+                padding: 20px 16px 30px;
+            }
+
+            .word {
+                font-size:
+                    clamp(
+                        48px,
+                        15vw,
+                        100px
+                    );
+
+                letter-spacing: -3px;
+            }
+
+            .definition {
+                font-size: 12px;
+            }
+
+            .progress-container {
+                width: 90%;
+                margin-top: 35px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .session-counter {
+                display: none;
+            }
+
+            .word-label {
+                letter-spacing: 2px;
+            }
+
+            .word {
+                font-size: 46px;
+            }
+        }
+
+        /* =========================================================
+           ACESSIBILIDADE
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =====================================================
+             SIDEBAR
+        ====================================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-mark"></span>
+                    <h1>Manda Rima</h1>
+                </div>
+
+            </div>
+
+            <div class="history-header">
+                <span class="history-title">
+                    Histórico da sessão
+                </span>
+
+                <span
+                    class="history-count"
+                    id="historyCount"
+                >
+                    0
+                </span>
+            </div>
+
+            <div
+                class="history"
+                id="history"
+                aria-label="Histórico de palavras sorteadas"
+            ></div>
+
+        </aside>
+
+        <!-- =====================================================
+             ÁREA PRINCIPAL
+        ====================================================== -->
+
+        <main class="main">
+
+            <header class="topbar">
+
+                <div
+                    class="status"
+                    id="status"
+                >
+                    <span
+                        class="status-dot"
+                        id="statusDot"
+                    ></span>
+
+                    <span id="statusText">
+                        Rimando
+                    </span>
+                </div>
+
+                <div class="session-counter">
+                    PALAVRAS:
+                    <strong id="sessionCount">
+                        0
+                    </strong>
+                </div>
+
+            </header>
+
+            <section
+                class="word-stage"
+                id="wordStage"
+                title="Clique para sortear a próxima palavra"
+            >
+
+                <h2
+                    class="word"
+                    id="word"
+                >
+                    carregando
+                </h2>
+
+                <div
+                    class="definition"
+                    id="definition"
+                >
+                    Preparando o banco de palavras...
+                </div>
+
+                <div class="progress-container">
+
+                    <div class="progress-meta">
+                        <span id="speedLabel">
+                            Normal · 5s
+                        </span>
+
+                        <span id="progressLabel">
+                            próxima
+                        </span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div
+                            class="progress-bar"
+                            id="progressBar"
+                        ></div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- =====================================================
+             EXATAMENTE 5 BOTÕES
+        ====================================================== -->
+
+        <footer class="controls">
+
+            <button
+                class="control-button"
+                data-speed="slow"
+                aria-label="Velocidade lenta"
+            >
+                <span>Lento</span>
+                <span class="speed-value">12s</span>
+            </button>
+
+            <button
+                class="control-button active"
+                data-speed="normal"
+                aria-label="Velocidade normal"
+            >
+                <span>Normal</span>
+                <span class="speed-value">9s</span>
+            </button>
+
+            <button
+                class="control-button"
+                data-speed="fast"
+                aria-label="Velocidade rápida"
+            >
+                <span>Rápido</span>
+                <span class="speed-value">6s</span>
+            </button>
+
+            <button
+                class="control-button"
+                data-speed="veryFast"
+                aria-label="Velocidade muito rápida"
+            >
+                <span>Muito rápido</span>
+                <span class="speed-value">3s</span>
+            </button>
+
+            <button
+                class="control-button pause"
+                id="pauseButton"
+                aria-label="Pausar ou retomar"
+            >
+                <span id="pauseIcon">Ⅱ</span>
+                <span id="pauseText">Pausar</span>
+            </button>
+
+        </footer>
+
+    </div>
+
+    <!-- =========================================================
+         LOADING
+    ========================================================== -->
+
+    <div
+        class="loading-overlay"
+        id="loadingOverlay"
+    >
+        <div class="loader">
+
+            <div class="loader-mark"></div>
+
+            <div class="loader-title">
+                Manda Rima
+            </div>
+
+            <div
+                class="loader-text"
+                id="loaderText"
+            >
+                Montando seu banco de palavras...
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        "use strict";
+
+        /* =========================================================
+           CONFIGURAÇÕES
+        ========================================================= */
+
+        const CONFIG = {
+
+            /*
+             * Dicionário Aberto.
+             *
+             * A API documenta:
+             * /prefix/<prefixo>
+             *
+             * e retorna palavras com uma prévia do verbete.
+             */
+            dictionaryApi:
+                "https://api.dicionario-aberto.net/prefix/",
+
+            /*
+             * Prefixos usados para construir um banco amplo.
+             *
+             * Em vez de pegar somente algumas palavras inventadas,
+             * consultamos vários blocos do dicionário.
+             *
+             * Prefixos de duas letras diminuem a quantidade de
+             * dados retornada por cada requisição.
+             */
+            prefixes: [
+                "ab", "ac", "ad", "af", "ag", "al", "am", "an",
+                "ap", "ar", "as", "at", "av",
+
+                "ba", "be", "bi", "bo", "bu",
+                "ca", "ce", "ci", "co", "cu",
+                "da", "de", "di", "do", "du",
+                "fa", "fe", "fi", "fo", "fu",
+                "ga", "ge", "gi", "go", "gu",
+                "ha", "he", "hi", "ho", "hu",
+                "ja", "je", "ji", "jo", "ju",
+                "la", "le", "li", "lo", "lu",
+                "ma", "me", "mi", "mo", "mu",
+                "na", "ne", "ni", "no", "nu",
+                "pa", "pe", "pi", "po", "pu",
+                "ra", "re", "ri", "ro", "ru",
+                "sa", "se", "si", "so", "su",
+                "ta", "te", "ti", "to", "tu",
+                "va", "ve", "vi", "vo", "vu"
+            ],
+
+            /*
+             * Evita que uma única requisição traga milhares
+             * de entradas e sobrecarregue o navegador.
+             */
+            maxWordsPerPrefix: 250,
+
+            /*
+             * Número máximo de requisições simultâneas.
+             */
+            concurrentRequests: 4,
+
+            /*
+             * Velocidades em milissegundos.
+             */
+            speeds: {
+                slow: {
+                    label: "Lento · 12s",
+                    ms: 12000
+                },
+
+                normal: {
+                    label: "Normal · 9s",
+                    ms: 9000
+                },
+
+                fast: {
+                    label: "Rápido · 6s",
+                    ms: 6000
+                },
+
+                veryFast: {
+                    label: "Muito rápido · 3s",
+                    ms: 3000
+                }
+            }
+        };
+
+
+        /* =========================================================
+           BANCO DE FALLBACK
+           
+           É usado quando a API não pode ser acessada.
+           
+           Formato:
+           ["palavra", "definição"]
+        ========================================================= */
+
+        const FALLBACK_WORDS = [
+
+            ["abismo", "profundidade ou situação difícil de superar"],
+            ["abraço", "gesto de envolver alguém com os braços"],
+            ["acaso", "acontecimento sem causa aparentemente determinada"],
+            ["acesso", "possibilidade ou caminho para chegar a algo"],
+            ["ação", "ato de agir ou efeito de realizar algo"],
+            ["alegria", "sentimento de satisfação e contentamento"],
+            ["alvo", "aquilo que se pretende atingir"],
+            ["amigo", "pessoa ligada a outra por amizade"],
+            ["amor", "forte sentimento de afeto e ligação"],
+            ["andar", "deslocar-se ou movimentar-se"],
+            ["anjo", "ser espiritual representado como mensageiro"],
+            ["animal", "ser vivo que geralmente possui capacidade de movimento"],
+            ["ano", "período aproximado de doze meses"],
+            ["aperto", "pressão ou situação de dificuldade"],
+            ["arma", "objeto utilizado para ataque ou defesa"],
+            ["arte", "atividade humana de expressão estética"],
+            ["asfalto", "material usado principalmente na pavimentação"],
+            ["ataque", "ação ofensiva contra alguém ou algo"],
+            ["aula", "atividade destinada ao ensino"],
+            ["azar", "má sorte"],
+            ["bagunça", "falta de ordem ou organização"],
+            ["bala", "pequeno projétil ou doce em formato semelhante"],
+            ["banda", "grupo de músicos que toca em conjunto"],
+            ["barco", "embarcação destinada à navegação"],
+            ["batalha", "confronto entre grupos ou pessoas"],
+            ["beleza", "qualidade do que provoca admiração estética"],
+            ["bem", "aquilo que possui valor ou qualidade positiva"],
+            ["beijo", "contato dos lábios como gesto de afeto"],
+            ["bicho", "animal, geralmente de maneira informal"],
+            ["bloco", "peça ou conjunto compacto de elementos"],
+            ["briga", "confronto físico ou discussão intensa"],
+            ["brilho", "luz ou luminosidade refletida por algo"],
+            ["cabeça", "parte superior do corpo onde ficam cérebro e face"],
+            ["caminho", "espaço ou direção por onde alguém passa"],
+            ["canção", "composição musical destinada a ser cantada"],
+            ["canto", "ato de cantar ou extremidade de um espaço"],
+            ["cara", "rosto ou pessoa, em linguagem informal"],
+            ["carinho", "demonstração de afeto e cuidado"],
+            ["carro", "veículo terrestre geralmente movido por motor"],
+            ["casa", "construção destinada à habitação"],
+            ["causa", "aquilo que produz determinado efeito"],
+            ["céu", "espaço aparente acima da superfície terrestre"],
+            ["cidade", "área urbana com população e estruturas próprias"],
+            ["coração", "órgão que bombeia sangue pelo corpo"],
+            ["coragem", "capacidade de enfrentar perigo ou dificuldade"],
+            ["corpo", "estrutura física de uma pessoa ou animal"],
+            ["correr", "deslocar-se rapidamente usando as pernas"],
+            ["corte", "ato ou resultado de cortar"],
+            ["crime", "infração prevista e punida pela lei"],
+            ["dança", "movimento corporal organizado geralmente acompanhado de música"],
+            ["dente", "estrutura dura presente na boca"],
+            ["dia", "período entre dois nasceres do Sol"],
+            ["dinheiro", "meio utilizado para realizar trocas econômicas"],
+            ["distância", "intervalo entre dois pontos"],
+            ["dor", "sensação desagradável física ou emocional"],
+            ["drama", "situação marcada por conflito ou emoção intensa"],
+            ["efeito", "resultado produzido por uma causa"],
+            ["energia", "capacidade de produzir trabalho ou transformação"],
+            ["erro", "falha ou engano"],
+            ["escola", "instituição destinada ao ensino"],
+            ["esquina", "ponto onde duas ruas ou linhas se encontram"],
+            ["esperança", "expectativa positiva em relação ao futuro"],
+            ["estrela", "corpo celeste que emite luz própria"],
+            ["fama", "reconhecimento público de alguém ou algo"],
+            ["fato", "acontecimento ou coisa que existe realmente"],
+            ["fala", "capacidade ou ato de expressar-se por palavras"],
+            ["família", "grupo de pessoas unidas por parentesco ou vínculo"],
+            ["festa", "evento organizado para celebração ou diversão"],
+            ["fogo", "fenômeno de combustão que produz calor e luz"],
+            ["força", "capacidade física ou influência capaz de produzir efeito"],
+            ["foto", "imagem produzida por processo fotográfico"],
+            ["frase", "conjunto de palavras que forma uma unidade de sentido"],
+            ["futuro", "tempo que ainda vai acontecer"],
+            ["garra", "força e determinação para alcançar algo"],
+            ["gente", "conjunto de pessoas"],
+            ["golpe", "ação rápida e forte contra alguém ou algo"],
+            ["guerra", "conflito armado entre grupos ou países"],
+            ["hora", "unidade de tempo equivalente a sessenta minutos"],
+            ["ideia", "representação mental ou pensamento"],
+            ["ilha", "porção de terra cercada de água"],
+            ["imagem", "representação visual de algo"],
+            ["impacto", "efeito ou choque produzido por algo"],
+            ["jogo", "atividade com regras realizada para competição ou diversão"],
+            ["jornada", "percurso ou período dedicado a uma atividade"],
+            ["justiça", "princípio de dar a cada um aquilo que lhe é devido"],
+            ["lago", "massa de água cercada por terra"],
+            ["lance", "movimento ou acontecimento específico"],
+            ["luta", "combate ou esforço intenso por algo"],
+            ["lugar", "espaço determinado ou posição"],
+            ["luz", "radiação capaz de produzir sensação visual"],
+            ["mágoa", "sentimento de tristeza ou ressentimento"],
+            ["mar", "grande extensão de água salgada"],
+            ["marca", "sinal ou característica que identifica algo"],
+            ["medo", "sensação diante de perigo ou ameaça"],
+            ["mente", "conjunto de capacidades relacionadas ao pensamento"],
+            ["mundo", "conjunto da Terra ou realidade em que vivemos"],
+            ["música", "arte de combinar sons de maneira organizada"],
+            ["noite", "período entre o pôr e o nascer do Sol"],
+            ["nome", "palavra usada para identificar alguém ou algo"],
+            ["norte", "ponto cardeal usado como referência de direção"],
+            ["olhar", "ato de dirigir os olhos para algo"],
+            ["onda", "movimento ou elevação que se propaga em uma superfície"],
+            ["ordem", "organização ou determinação para fazer algo"],
+            ["palavra", "unidade da linguagem com significado"],
+            ["paz", "estado de ausência de conflito"],
+            ["peito", "região anterior do tronco"],
+            ["pensamento", "atividade ou resultado de pensar"],
+            ["perigo", "situação capaz de causar dano"],
+            ["poder", "capacidade de realizar ou influenciar algo"],
+            ["problema", "questão ou situação que exige solução"],
+            ["povo", "conjunto de pessoas que compartilha uma identidade"],
+            ["praça", "espaço público aberto dentro de uma cidade"],
+            ["pressão", "força exercida sobre uma superfície ou situação"],
+            ["prova", "aquilo que demonstra ou verifica alguma coisa"],
+            ["quebrada", "região ou área urbana, especialmente em uso informal"],
+            ["raiva", "forte sentimento de irritação"],
+            ["rap", "gênero musical baseado principalmente em ritmo e fala"],
+            ["razão", "capacidade de pensar e compreender logicamente"],
+            ["realidade", "conjunto daquilo que existe efetivamente"],
+            ["respeito", "consideração ou reconhecimento do valor de alguém"],
+            ["ritmo", "organização regular de sons, movimentos ou acontecimentos"],
+            ["rua", "via destinada principalmente à circulação"],
+            ["sangue", "líquido que circula pelo sistema cardiovascular"],
+            ["saudade", "sentimento causado pela ausência de alguém ou algo"],
+            ["segredo", "informação mantida em conhecimento restrito"],
+            ["sentido", "significado ou direção de algo"],
+            ["sonho", "experiência mental durante o sono ou desejo intenso"],
+            ["som", "sensação produzida por ondas sonoras"],
+            ["sorte", "circunstância favorável ou acaso"],
+            ["tempo", "sucessão dos acontecimentos ou condição atmosférica"],
+            ["terra", "planeta onde vivemos ou superfície do solo"],
+            ["verdade", "aquilo que corresponde aos fatos"],
+            ["vida", "condição característica dos seres vivos"],
+            ["vila", "pequena povoação ou conjunto de casas"],
+            ["voz", "som produzido pelo aparelho vocal"],
+            ["vontade", "faculdade de desejar ou decidir fazer algo"],
+            ["zona", "região ou área determinada"],
+
+            /* Segunda camada do fallback */
+
+            ["acorde", "combinação de notas musicais tocadas simultaneamente"],
+            ["adrenalina", "hormônio associado à reação de alerta do organismo"],
+            ["afeto", "sentimento de carinho ou afeição"],
+            ["agito", "movimentação intensa ou diversão"],
+            ["alívio", "sensação de diminuição de dor ou preocupação"],
+            ["ambição", "desejo intenso de alcançar algo"],
+            ["amizade", "relação de afeto entre amigos"],
+            ["ânimo", "disposição emocional para agir"],
+            ["aplausos", "manifestação de aprovação feita com palmas"],
+            ["aventura", "experiência marcada por acontecimentos inesperados"],
+            ["aviso", "informação destinada a chamar atenção para algo"],
+            ["batalhador", "aquele que luta persistentemente por seus objetivos"],
+            ["batida", "som produzido por uma pancada ou ritmo musical"],
+            ["batalhão", "grande agrupamento organizado, especialmente militar"],
+            ["berro", "grito muito forte"],
+            ["boca", "abertura por onde entram alimentos e saem sons"],
+            ["bonde", "veículo coletivo sobre trilhos ou grupo de pessoas"],
+            ["bordão", "frase repetida frequentemente"],
+            ["bravo", "corajoso ou expressão de aprovação"],
+            ["brecha", "abertura ou oportunidade em uma situação"],
+            ["caos", "estado de completa desordem"],
+            ["calma", "estado de tranquilidade"],
+            ["camisa", "peça de roupa usada sobre o tronco"],
+            ["campanha", "conjunto organizado de ações para um objetivo"],
+            ["campo", "área aberta ou espaço destinado a determinada atividade"],
+            ["capacidade", "aptidão para realizar algo"],
+            ["capital", "cidade principal de uma unidade política"],
+            ["cena", "parte de uma ação ou acontecimento"],
+            ["chance", "possibilidade de algo acontecer"],
+            ["chegada", "ato ou momento de chegar"],
+            ["choque", "impacto físico ou efeito emocional intenso"],
+            ["ciclo", "sequência de acontecimentos que se repete"],
+            ["classe", "grupo ou categoria de pessoas ou coisas"],
+            ["clima", "condições atmosféricas de determinado lugar"],
+            ["conquista", "ato de alcançar algo desejado"],
+            ["controle", "ato ou capacidade de dirigir algo"],
+            ["criação", "ato ou resultado de criar"],
+            ["crença", "convicção de que algo é verdadeiro"],
+            ["desafio", "situação que exige esforço ou habilidade"],
+            ["destino", "rumo ou resultado final atribuído a alguém"],
+            ["detalhe", "elemento pequeno ou específico de algo"],
+            ["diferença", "característica que distingue uma coisa de outra"],
+            ["direção", "orientação ou caminho seguido"],
+            ["domínio", "controle ou conhecimento profundo sobre algo"],
+            ["energia", "capacidade de realizar trabalho ou produzir mudança"],
+            ["esforço", "aplicação de força física ou mental"],
+            ["espelho", "superfície que reflete imagens"],
+            ["estilo", "maneira característica de fazer ou apresentar algo"],
+            ["estrada", "via destinada ao deslocamento entre lugares"],
+            ["foco", "ponto para o qual atenção ou ação é dirigida"],
+            ["forma", "aspecto ou configuração de algo"],
+            ["fronteira", "limite entre territórios ou áreas"],
+            ["ganho", "aquilo que é obtido como vantagem ou lucro"],
+            ["gênio", "pessoa de inteligência ou talento extraordinário"],
+            ["grito", "som vocal produzido com grande intensidade"],
+            ["grupo", "conjunto de pessoas ou coisas reunidas"],
+            ["história", "relato de acontecimentos reais ou imaginários"],
+            ["honra", "sentimento de dignidade e consideração"],
+            ["humor", "estado emocional ou capacidade de provocar riso"],
+            ["instinto", "comportamento natural sem necessidade de aprendizado"],
+            ["inimigo", "pessoa ou grupo que se opõe a outro"],
+            ["jogo", "atividade estruturada por regras"],
+            ["lei", "regra estabelecida por autoridade competente"],
+            ["liberdade", "condição de poder agir sem coerção indevida"],
+            ["linha", "traço contínuo ou sequência de pontos"],
+            ["líder", "pessoa que conduz ou orienta um grupo"],
+            ["lógica", "modo de raciocinar coerentemente"],
+            ["loucura", "estado ou comportamento considerado sem racionalidade"],
+            ["medida", "quantidade determinada por uma unidade"],
+            ["memória", "capacidade de conservar e recuperar informações"],
+            ["movimento", "mudança de posição ou estado"],
+            ["nível", "grau ou posição em uma escala"],
+            ["objetivo", "aquilo que se pretende alcançar"],
+            ["opinião", "maneira pessoal de pensar sobre algo"],
+            ["origem", "ponto ou momento em que algo começa"],
+            ["pacto", "acordo entre pessoas ou grupos"],
+            ["paixão", "sentimento intenso de atração ou entusiasmo"],
+            ["passo", "movimento realizado ao caminhar"],
+            ["perdão", "ato de deixar de considerar uma ofensa"],
+            ["pista", "indício ou local destinado a determinada atividade"],
+            ["plano", "projeto ou intenção organizada"],
+            ["ponto", "posição ou elemento determinado"],
+            ["presença", "condição de estar em determinado lugar"],
+            ["pressa", "necessidade ou desejo de fazer algo rapidamente"],
+            ["pulso", "batimento rítmico das artérias"],
+            ["queda", "ato ou resultado de cair"],
+            ["raiz", "parte da planta geralmente situada sob o solo"],
+            ["reação", "resposta provocada por uma ação"],
+            ["resposta", "aquilo que se diz ou faz diante de algo"],
+            ["risco", "possibilidade de ocorrer algo prejudicial"],
+            ["rosto", "parte anterior da cabeça humana"],
+            ["segurança", "condição de estar protegido contra perigos"],
+            ["sinal", "elemento usado para transmitir uma informação"],
+            ["silêncio", "ausência de sons"],
+            ["sombra", "área escura formada pela interrupção da luz"],
+            ["talento", "aptidão natural ou desenvolvida para algo"],
+            ["tática", "método usado para alcançar determinado objetivo"],
+            ["técnica", "conjunto de procedimentos usados para realizar algo"],
+            ["tensão", "estado de esforço físico ou emocional"],
+            ["trajeto", "caminho percorrido entre dois pontos"],
+            ["tribo", "grupo unido por origem ou características comuns"],
+            ["união", "ato ou estado de unir pessoas ou coisas"],
+            ["universo", "conjunto de tudo que existe"],
+            ["valor", "importância ou preço atribuído a algo"],
+            ["vantagem", "condição que favorece alguém"],
+            ["verdadeiro", "que está de acordo com a realidade"],
+            ["vitória", "resultado favorável em uma disputa"],
+            ["vivo", "que possui vida"],
+            ["volume", "quantidade ou intensidade de algo"],
+            ["xadrez", "jogo de estratégia entre dois jogadores"],
+            ["zero", "número que representa ausência de quantidade"]
+        ];
+
+
+        /* =========================================================
+           ESTADO DA APLICAÇÃO
+        ========================================================= */
+
+        let dictionary = new Map();
+
+        let deck = [];
+        let history = [];
+
+        let currentWord = null;
+
+        let paused = false;
+
+        let timerId = null;
+        let animationFrame = null;
+
+        let cycleStartedAt = 0;
+        let cycleDuration = CONFIG.speeds.normal.ms;
+
+        let activeSpeed = "normal";
+
+
+        /* =========================================================
+           ELEMENTOS DOM
+        ========================================================= */
+
+        const wordElement =
+            document.getElementById("word");
+
+        const definitionElement =
+            document.getElementById("definition");
+
+        const historyElement =
+            document.getElementById("history");
+
+        const historyCountElement =
+            document.getElementById("historyCount");
+
+        const sessionCountElement =
+            document.getElementById("sessionCount");
+
+        const progressBar =
+            document.getElementById("progressBar");
+
+        const progressLabel =
+            document.getElementById("progressLabel");
+
+        const speedLabel =
+            document.getElementById("speedLabel");
+
+        const pauseButton =
+            document.getElementById("pauseButton");
+
+        const pauseText =
+            document.getElementById("pauseText");
+
+        const pauseIcon =
+            document.getElementById("pauseIcon");
+
+        const status =
+            document.getElementById("status");
+
+        const statusText =
+            document.getElementById("statusText");
+
+        const wordStage =
+            document.getElementById("wordStage");
+
+        const loadingOverlay =
+            document.getElementById("loadingOverlay");
+
+        const loaderText =
+            document.getElementById("loaderText");
+
+
+        /* =========================================================
+           UTILITÁRIOS
+        ========================================================= */
+
+        /**
+         * Embaralhamento Fisher-Yates.
+         *
+         * Garante uma distribuição correta das posições do deck.
+         */
+        function shuffle(array) {
+
+            const copy = [...array];
+
+            for (let i = copy.length - 1; i > 0; i--) {
+
+                const j =
+                    Math.floor(Math.random() * (i + 1));
+
+                [
+                    copy[i],
+                    copy[j]
+                ] = [
+                    copy[j],
+                    copy[i]
+                ];
+            }
+
+            return copy;
+        }
+
+
+        /**
+         * Remove HTML de uma string.
+         */
+        function stripHTML(html) {
+
+            const temp =
+                document.createElement("div");
+
+            temp.innerHTML = html || "";
+
+            return (
+                temp.textContent ||
+                temp.innerText ||
+                ""
+            );
+        }
+
+
+        /**
+         * Limpa a definição para deixar somente uma
+         * frase curta.
+         */
+        function cleanDefinition(text) {
+
+            let result =
+                stripHTML(text)
+                    .replace(/\s+/g, " ")
+                    .trim();
+
+            /*
+             * Remove separadores antigos do Dicionário Aberto.
+             */
+            result =
+                result
+                    .replace(/^;\s*/, "")
+                    .replace(/^\.\s*/, "");
+
+            /*
+             * Algumas entradas possuem várias definições.
+             * Pegamos somente a primeira para manter a interface
+             * compacta.
+             */
+            const separators = [
+                " 1.",
+                " 2.",
+                " 3.",
+                " 4.",
+                " 5.",
+                "; "
+            ];
+
+            for (const separator of separators) {
+
+                const index =
+                    result.indexOf(separator);
+
+                if (
+                    index > 25 &&
+                    index < result.length
+                ) {
+                    result =
+                        result.substring(0, index);
+                }
+            }
+
+            if (result.length > 145) {
+
+                result =
+                    result.substring(0, 142);
+
+                const lastSpace =
+                    result.lastIndexOf(" ");
+
+                if (lastSpace > 80) {
+                    result =
+                        result.substring(0, lastSpace);
+                }
+
+                result += "…";
+            }
+
+            return result || "Definição não disponível.";
+        }
+
+
+        /**
+         * Verifica se a palavra parece apropriada
+         * para treino de rima.
+         */
+        function isValidWord(word) {
+
+            if (!word) {
+                return false;
+            }
+
+            word =
+                word
+                    .trim()
+                    .toLowerCase();
+
+            /*
+             * Muito curta ou absurdamente grande.
+             */
+            if (
+                word.length < 3 ||
+                word.length > 22
+            ) {
+                return false;
+            }
+
+            /*
+             * Frases, números e siglas.
+             */
+            if (/\s/.test(word)) {
+                return false;
+            }
+
+            if (/[0-9]/.test(word)) {
+                return false;
+            }
+
+            /*
+             * Permite letras portuguesas e hífen.
+             */
+            if (
+                !/^[a-záàâãéêíóôõúüçñ-]+$/i.test(word)
+            ) {
+                return false;
+            }
+
+            /*
+             * Evita abreviações muito suspeitas.
+             */
+            if (
+                word.includes(".") ||
+                word.includes("/") ||
+                word.includes("_")
+            ) {
+                return false;
+            }
+
+            /*
+             * Filtra algumas entradas muito claramente
+             * inadequadas ao objetivo do treino.
+             */
+            const blockedPatterns = [
+                /^http/i,
+                /^sr$/,
+                /^sra$/,
+                /^dr$/,
+                /^dra$/,
+                /^etc$/,
+                /^n[ºo]?$/
+            ];
+
+            return !blockedPatterns.some(
+                pattern => pattern.test(word)
+            );
+        }
+
+
+        /**
+         * Registra uma palavra no banco.
+         *
+         * Map impede duplicações mesmo quando dois prefixos
+         * retornam a mesma entrada.
+         */
+        function addWord(word, definition) {
+
+            const normalized =
+                word
+                    .trim()
+                    .toLowerCase();
+
+            if (!isValidWord(normalized)) {
+                return;
+            }
+
+            const clean =
+                cleanDefinition(definition);
+
+            if (
+                !clean ||
+                clean === "Definição não disponível."
+            ) {
+                return;
+            }
+
+            if (!dictionary.has(normalized)) {
+
+                dictionary.set(
+                    normalized,
+                    {
+                        word: normalized,
+                        definition: clean
+                    }
+                );
+            }
+        }
+
+
+        /* =========================================================
+           API — DICIONÁRIO ABERTO
+        ========================================================= */
+
+        /**
+         * Busca um prefixo específico.
+         */
+        async function fetchPrefix(prefix) {
+
+            const controller =
+                new AbortController();
+
+            /*
+             * Timeout para que uma API travada não
+             * impeça o fallback.
+             */
+            const timeout =
+                setTimeout(
+                    () => controller.abort(),
+                    7000
+                );
+
+            try {
+
+                const response =
+                    await fetch(
+                        CONFIG.dictionaryApi +
+                        encodeURIComponent(prefix),
+                        {
+                            signal: controller.signal,
+                            headers: {
+                                "Accept": "application/json"
+                            }
+                        }
+                    );
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+                }
+
+                const data =
+                    await response.json();
+
+                if (!Array.isArray(data)) {
+                    return 0;
+                }
+
+                let added = 0;
+
+                for (
+                    let i = 0;
+                    i < Math.min(
+                        data.length,
+                        CONFIG.maxWordsPerPrefix
+                    );
+                    i++
+                ) {
+
+                    const item = data[i];
+
+                    if (
+                        !item ||
+                        !item.word
+                    ) {
+                        continue;
+                    }
+
+                    const before =
+                        dictionary.size;
+
+                    addWord(
+                        item.word,
+                        item.preview || ""
+                    );
+
+                    if (
+                        dictionary.size > before
+                    ) {
+                        added++;
+                    }
+                }
+
+                return added;
+
+            } catch (error) {
+
+                /*
+                 * Erros individuais são ignorados.
+                 * Outros prefixos continuam sendo carregados.
+                 */
+                console.warn(
+                    `Falha no prefixo ${prefix}:`,
+                    error
+                );
+
+                return 0;
+
+            } finally {
+
+                clearTimeout(timeout);
+            }
+        }
+
+
+        /**
+         * Executa várias requisições, mas com limite
+         * de concorrência.
+         */
+        async function loadDictionaryFromAPI() {
+
+            const prefixes =
+                shuffle(CONFIG.prefixes);
+
+            let index = 0;
+
+            async function worker() {
+
+                while (
+                    index < prefixes.length
+                ) {
+
+                    const currentIndex =
+                        index++;
+
+                    const prefix =
+                        prefixes[currentIndex];
+
+                    loaderText.textContent =
+                        `Carregando palavras · ${prefix.toUpperCase()}…`;
+
+                    await fetchPrefix(prefix);
+                }
+            }
+
+            const workers =
+                Array.from(
+                    {
+                        length:
+                            Math.min(
+                                CONFIG.concurrentRequests,
+                                prefixes.length
+                            )
+                    },
+                    worker
+                );
+
+            await Promise.all(workers);
+
+            return dictionary.size;
+        }
+
+
+        /* =========================================================
+           FALLBACK
+        ========================================================= */
+
+        function loadFallback() {
+
+            for (
+                const [word, definition]
+                of FALLBACK_WORDS
+            ) {
+
+                addWord(
+                    word,
+                    definition
+                );
+            }
+
+            return dictionary.size;
+        }
+
+
+        /**
+         * Caso a API tenha retornado poucas palavras,
+         * o fallback complementa o banco.
+         *
+         * Isso significa que mesmo uma API parcialmente
+         * funcional não deixa o treino com um banco pequeno.
+         */
+        function ensureMinimumDatabase() {
+
+            const MINIMUM_DATABASE = 100;
+
+            if (
+                dictionary.size <
+                MINIMUM_DATABASE
+            ) {
+                loadFallback();
+            }
+        }
+
+
+        /* =========================================================
+           DECK
+        ========================================================= */
+
+        /**
+         * Cria um novo ciclo do baralho.
+         */
+        function rebuildDeck() {
+
+            const words =
+                Array.from(
+                    dictionary.values()
+                );
+
+            deck =
+                shuffle(words);
+        }
+
+
+        /**
+         * Pega a próxima palavra do deck.
+         */
+        function drawNextWord() {
+
+            if (deck.length === 0) {
+
+                rebuildDeck();
+
+                /*
+                 * Em um caso extremamente improvável de banco vazio,
+                 * usamos o fallback novamente.
+                 */
+                if (deck.length === 0) {
+                    loadFallback();
+                    rebuildDeck();
+                }
+            }
+
+            return deck.pop();
+        }
+
+
+        /* =========================================================
+           HISTÓRICO
+        ========================================================= */
+
+        /**
+         * Adiciona somente o novo item à sidebar.
+         *
+         * Não reconstruímos todo o histórico a cada sorteio.
+         * Isso é importante quando a sessão fica muito longa.
+         */
+        function appendHistoryItem(item) {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "history-item";
+
+            element.dataset.index =
+                history.length - 1;
+
+            element.innerHTML = `
+                <span class="history-number">
+                    ${String(history.length).padStart(3, "0")}
+                </span>
+
+                <span class="history-word">
+                    ${escapeHTML(item.word)}
+                </span>
+            `;
+
+            historyElement.appendChild(element);
+
+            /*
+             * Retira o destaque anterior.
+             */
+            const previous =
+                historyElement.querySelector(
+                    ".history-item.current"
+                );
+
+            if (previous) {
+                previous.classList.remove("current");
+            }
+
+            element.classList.add("current");
+
+            /*
+             * Mantém o item atual visível.
+             */
+            element.scrollIntoView({
+                block: "nearest",
+                behavior: "smooth"
+            });
+        }
+
+
+        /**
+         * Atualiza apenas os elementos de contador.
+         */
+        function updateCounters() {
+
+            const count =
+                history.length;
+
+            historyCountElement.textContent =
+                count;
+
+            sessionCountElement.textContent =
+                count;
+        }
+
+
+        /**
+         * Escapa texto para evitar inserir conteúdo
+         * inesperado no HTML.
+         */
+        function escapeHTML(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+
+        /* =========================================================
+           INTERFACE DA PALAVRA
+        ========================================================= */
+
+        function showWord(item) {
+
+            if (!item) {
+                return;
+            }
+
+            currentWord = item;
+
+            /*
+             * Pequena animação de saída.
+             */
+            wordElement.classList.remove("ready");
+            wordElement.classList.add("changing");
+
+            setTimeout(() => {
+
+                wordElement.textContent =
+                    item.word;
+
+                definitionElement.textContent =
+                    item.definition;
+
+                wordElement.classList.remove(
+                    "changing"
+                );
+
+                void wordElement.offsetWidth;
+
+                wordElement.classList.add("ready");
+
+            }, 130);
+
+            /*
+             * Registra no histórico.
+             */
+            history.push(item);
+
+            appendHistoryItem(item);
+
+            updateCounters();
+        }
+
+
+        /**
+         * Sorteia uma palavra.
+         */
+        function nextWord() {
+
+            const item =
+                drawNextWord();
+
+            if (!item) {
+                return;
+            }
+
+            showWord(item);
+
+            restartTimer();
+        }
+
+
+        /* =========================================================
+           CRONÔMETRO
+        ========================================================= */
+
+        function clearTimers() {
+
+            if (timerId !== null) {
+
+                clearTimeout(timerId);
+
+                timerId = null;
+            }
+
+            if (
+                animationFrame !== null
+            ) {
+
+                cancelAnimationFrame(
+                    animationFrame
+                );
+
+                animationFrame = null;
+            }
+        }
+
+
+        /**
+         * Reinicia o intervalo atual.
+         */
+        function restartTimer() {
+
+            clearTimers();
+
+            if (paused) {
+                updateProgress(1);
+                return;
+            }
+
+            cycleDuration =
+                CONFIG.speeds[
+                    activeSpeed
+                ].ms;
+
+            cycleStartedAt =
+                performance.now();
+
+            timerId =
+                setTimeout(
+                    () => {
+                        nextWord();
+                    },
+                    cycleDuration
+                );
+
+            animateProgress();
+        }
+
+
+        /**
+         * Barra de progresso baseada no tempo real.
+         *
+         * requestAnimationFrame deixa a barra suave
+         * independentemente do FPS.
+         */
+        function animateProgress() {
+
+            if (paused) {
+                return;
+            }
+
+            const now =
+                performance.now();
+
+            const elapsed =
+                now - cycleStartedAt;
+
+            const progress =
+                Math.min(
+                    elapsed / cycleDuration,
+                    1
+                );
+
+            updateProgress(progress);
+
+            if (progress < 1) {
+
+                animationFrame =
+                    requestAnimationFrame(
+                        animateProgress
+                    );
+            }
+        }
+
+
+        function updateProgress(progress) {
+
+            const remaining =
+                Math.max(
+                    0,
+                    Math.ceil(
+                        (
+                            cycleDuration *
+                            (1 - progress)
+                        ) / 100
+                    ) / 10
+                );
+
+            progressBar.style.transform =
+                `scaleX(${Math.max(
+                    0,
+                    1 - progress
+                )})`;
+
+            if (paused) {
+
+                progressLabel.textContent =
+                    "pausado";
+
+            } else {
+
+                progressLabel.textContent =
+                    remaining > 1
+                        ? `próxima · ${remaining}s`
+                        : "próxima";
+            }
+        }
+
+
+        /* =========================================================
+           PAUSA
+        ========================================================= */
+
+        function togglePause() {
+
+            paused = !paused;
+
+            if (paused) {
+
+                clearTimers();
+
+                pauseButton.classList.add(
+                    "paused"
+                );
+
+                pauseText.textContent =
+                    "Retomar";
+
+                pauseIcon.textContent =
+                    "▶";
+
+                status.classList.add(
+                    "paused"
+                );
+
+                statusText.textContent =
+                    "Pausado";
+
+                progressLabel.textContent =
+                    "pausado";
+
+            } else {
+
+                pauseButton.classList.remove(
+                    "paused"
+                );
+
+                pauseText.textContent =
+                    "Pausar";
+
+                pauseIcon.textContent =
+                    "Ⅱ";
+
+                status.classList.remove(
+                    "paused"
+                );
+
+                statusText.textContent =
+                    "Rimando";
+
+                restartTimer();
+            }
+        }
+
+
+        /* =========================================================
+           VELOCIDADES
+        ========================================================= */
+
+        function setSpeed(speed) {
+
+            if (!CONFIG.speeds[speed]) {
+                return;
+            }
+
+            activeSpeed = speed;
+
+            const config =
+                CONFIG.speeds[speed];
+
+            speedLabel.textContent =
+                config.label;
+
+            document
+                .querySelectorAll(
+                    "[data-speed]"
+                )
+                .forEach(button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.speed === speed
+                    );
+                });
+
+            /*
+             * Se estiver rodando, o novo intervalo começa
+             * imediatamente.
+             *
+             * Se estiver pausado, apenas atualizamos a
+             * velocidade; o timer volta a funcionar quando
+             * o usuário retomar.
+             */
+            if (!paused) {
+                restartTimer();
+            }
+        }
+
+
+        /* =========================================================
+           EVENTOS
+        ========================================================= */
+
+        /*
+         * Os quatro botões de velocidade.
+         */
+        document
+            .querySelectorAll("[data-speed]")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        setSpeed(
+                            button.dataset.speed
+                        );
+                    }
+                );
+            });
+
+
+        /*
+         * Botão de pausa.
+         */
+        pauseButton.addEventListener(
+            "click",
+            togglePause
+        );
+
+
+        /*
+         * Clique na palavra:
+         * pula imediatamente para a próxima.
+         */
+        wordStage.addEventListener(
+            "click",
+            event => {
+
+                /*
+                 * Não faz nada se estiver pausado.
+                 *
+                 * Isso mantém a semântica de que pausa congela
+                 * completamente o treino.
+                 */
+                if (paused) {
+                    return;
+                }
+
+                nextWord();
+            }
+        );
+
+
+        /*
+         * Barra de espaço:
+         * pausa/retoma.
+         */
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                /*
+                 * Evita que a barra de espaço execute
+                 * alguma ação inesperada quando o foco
+                 * estiver em um elemento interativo.
+                 */
+                const tag =
+                    event.target.tagName;
+
+                if (
+                    tag === "INPUT" ||
+                    tag === "TEXTAREA" ||
+                    tag === "SELECT"
+                ) {
+                    return;
+                }
+
+                if (
+                    event.code === "Space"
+                ) {
+
+                    event.preventDefault();
+
+                    togglePause();
+                }
+            }
+        );
+
+
+        /* =========================================================
+           INICIALIZAÇÃO
+        ========================================================= */
+
+        async function initialize() {
+
+            let apiWords = 0;
+
+            try {
+
+                /*
+                 * Tentamos montar um banco real do Dicionário
+                 * Aberto primeiro.
+                 */
+                apiWords =
+                    await loadDictionaryFromAPI();
+
+            } catch (error) {
+
+                console.warn(
+                    "Falha geral ao carregar API:",
+                    error
+                );
+            }
+
+            /*
+             * Complementa com fallback se necessário.
+             *
+             * Se a API funcionou completamente, o fallback
+             * não é necessário.
+             */
+            if (
+                apiWords < 100
+            ) {
+
+                loaderText.textContent =
+                    "Completando banco local…";
+
+                loadFallback();
+            }
+
+            ensureMinimumDatabase();
+
+            /*
+             * Se mesmo assim não houver dados, algo muito
+             * inesperado ocorreu.
+             */
+            if (dictionary.size === 0) {
+
+                throw new Error(
+                    "Não foi possível criar um banco de palavras."
+                );
+            }
+
+            /*
+             * Monta o primeiro deck.
+             */
+            rebuildDeck();
+
+            /*
+             * Mostra a primeira palavra.
+             *
+             * drawNextWord() remove a palavra do deck,
+             * garantindo que ela não apareça novamente
+             * neste ciclo.
+             */
+            const first =
+                drawNextWord();
+
+            showWord(first);
+
+            /*
+             * Começa o cronômetro.
+             */
+            restartTimer();
+
+            /*
+             * Esconde loading.
+             */
+            setTimeout(() => {
+
+                loadingOverlay.classList.add(
+                    "hidden"
+                );
+
+            }, 180);
+
+            console.info(
+                `Treino iniciado com ${dictionary.size} palavras.`
+            );
+        }
+
+
+        /*
+         * Inicializa e trata uma eventual falha inesperada.
+         */
+        initialize().catch(error => {
+
+            console.error(error);
+
+            /*
+             * Último recurso:
+             * tenta rodar somente com o banco embutido.
+             */
+            dictionary.clear();
+
+            loadFallback();
+
+            rebuildDeck();
+
+            const first =
+                drawNextWord();
+
+            showWord(first);
+
+            restartTimer();
+
+            loaderText.textContent =
+                "Banco local ativado.";
+
+            setTimeout(() => {
+
+                loadingOverlay.classList.add(
+                    "hidden"
+                );
+
+            }, 500);
+        });
+
+    </script>
+
+</body>
+</html>
